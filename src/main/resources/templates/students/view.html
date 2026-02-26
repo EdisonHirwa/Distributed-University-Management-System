@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout/base :: head('Student Details')}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container my-4 flex-grow-1">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-person-circle me-2 text-info"></i>Student Details</h2>
+        <a th:href="@{/students}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to List
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Personal Info Card -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person me-2"></i>Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">Student No.</dt>
+                        <dd class="col-sm-7">
+                            <span class="badge bg-secondary"
+                                  th:text="${student.studentNumber != null ? student.studentNumber : 'N/A'}"></span>
+                        </dd>
+
+                        <dt class="col-sm-5">Full Name</dt>
+                        <dd class="col-sm-7 fw-semibold" th:text="${student.fullName}"></dd>
+
+                        <dt class="col-sm-5">Email</dt>
+                        <dd class="col-sm-7">
+                            <a th:href="'mailto:' + ${student.email}" th:text="${student.email}"></a>
+                        </dd>
+
+                        <dt class="col-sm-5">Department</dt>
+                        <dd class="col-sm-7">
+                            <span th:if="${student.department != null}"
+                                  class="badge bg-primary" th:text="${student.department.name}"></span>
+                            <span th:unless="${student.department != null}" class="text-muted">N/A</span>
+                        </dd>
+
+                        <dt class="col-sm-5">Enrolled On</dt>
+                        <dd class="col-sm-7 text-muted" th:text="${student.enrollmentDate}"></dd>
+                    </dl>
+                </div>
+                <div class="card-footer bg-transparent d-flex gap-2">
+                    <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-warning btn-sm">
+                        <i class="bi bi-pencil me-1"></i>Edit
+                    </a>
+                    <a th:href="@{/students/delete/{id}(id=${student.id})}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete this student?')">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Courses Card -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-book me-2"></i>Enrolled Courses</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Code</th>
+                                <th>Title</th>
+                                <th>Credits</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- courses is eagerly loaded via findByIdWithCourses -->
+                            <tr th:if="${#lists.isEmpty(student.courses)}">
+                                <td colspan="3" class="text-center py-3 text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>Not enrolled in any courses yet
+                                </td>
+                            </tr>
+                            <tr th:each="course : ${student.courses}">
+                                <td><span class="badge bg-dark" th:text="${course.courseCode}"></span></td>
+                                <td th:text="${course.title}"></td>
+                                <td th:text="${course.credits}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>

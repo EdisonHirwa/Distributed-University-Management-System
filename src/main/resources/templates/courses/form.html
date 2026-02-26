@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{layout/base :: head(${formTitle})}"></head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav th:replace="~{layout/base :: navbar}"></nav>
+
+<main class="container my-4 flex-grow-1">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow">
+                <div class="card-header bg-warning text-dark py-3">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="bi bi-book me-2"></i><span th:text="${formTitle}">Course Form</span>
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <form th:action="@{/courses/save}" th:object="${course}" method="post">
+                        <input type="hidden" th:field="*{id}"/>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="courseCode" class="form-label fw-semibold">Course Code <span class="text-danger">*</span></label>
+                                <input type="text" id="courseCode" th:field="*{courseCode}"
+                                       class="form-control" th:classappend="${#fields.hasErrors('courseCode')} ? 'is-invalid'"
+                                       placeholder="e.g. CS101"/>
+                                <div class="invalid-feedback" th:errors="*{courseCode}"></div>
+                            </div>
+                            <div class="col-md-5">
+                                <label for="title" class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
+                                <input type="text" id="title" th:field="*{title}"
+                                       class="form-control" th:classappend="${#fields.hasErrors('title')} ? 'is-invalid'"
+                                       placeholder="Course title"/>
+                                <div class="invalid-feedback" th:errors="*{title}"></div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="credits" class="form-label fw-semibold">Credits <span class="text-danger">*</span></label>
+                                <input type="number" id="credits" th:field="*{credits}"
+                                       class="form-control" th:classappend="${#fields.hasErrors('credits')} ? 'is-invalid'"
+                                       min="1" max="10"/>
+                                <div class="invalid-feedback" th:errors="*{credits}"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-semibold">Description</label>
+                            <textarea id="description" th:field="*{description}"
+                                      class="form-control" rows="2"
+                                      placeholder="Short course description"></textarea>
+                        </div>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="departmentId" class="form-label fw-semibold">Department</label>
+                                <select id="departmentId" name="departmentId" class="form-select">
+                                    <option value="">-- Select Department --</option>
+                                    <option th:each="dept : ${departments}"
+                                            th:value="${dept.id}"
+                                            th:text="${dept.name}"
+                                            th:selected="${selectedDepartmentId != null and selectedDepartmentId == dept.id}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lecturerId" class="form-label fw-semibold">Lecturer</label>
+                                <select id="lecturerId" name="lecturerId" class="form-select">
+                                    <option value="">-- Select Lecturer --</option>
+                                    <option th:each="lec : ${lecturers}"
+                                            th:value="${lec.id}"
+                                            th:text="${lec.fullName}"
+                                            th:selected="${selectedLecturerId != null and selectedLecturerId == lec.id}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-save me-1"></i>Save
+                            </button>
+                            <a th:href="@{/courses}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{layout/base :: footer}"></footer>
+<div th:replace="~{layout/base :: scripts}"></div>
+</body>
+</html>
