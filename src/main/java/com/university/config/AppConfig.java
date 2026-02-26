@@ -35,6 +35,7 @@ public class AppConfig {
         ds.setMaximumPoolSize(10);
         ds.setMinimumIdle(2);
         ds.setConnectionTimeout(30000);
+        ds.setInitializationFailTimeout(-1); // don't fail at startup if DB is temporarily unavailable
         return ds;
     }
 
@@ -55,6 +56,8 @@ public class AppConfig {
         props.setProperty("hibernate.format_sql",      "true");
         props.setProperty("hibernate.connection.handling_mode",
                           "DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION");
+        // Do NOT query DB metadata during SessionFactory bootstrap
+        props.setProperty("hibernate.boot.allow_jdbc_metadata_access", "false");
         return props;
     }
 
